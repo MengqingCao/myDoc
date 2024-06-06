@@ -5,7 +5,12 @@
 <!-- ![](./images/llama-factory-logo.png)
 [![ascend-support](https://www.hiascend.com/_static3/logo1.BQ2XZIjU.svg)](https://www.hiascend.com/) -->
 
-[TOC]
+- [LLAMA-Factory × 昇腾 安装指南](#llama-factory--昇腾-安装指南)
+  - [昇腾环境安装](#昇腾环境安装)
+  - [LLaMA-Factory 安装](#llama-factory-安装)
+    - [最简安装](#最简安装)
+    - [推荐安装](#推荐安装)
+    - [安装校验](#安装校验)
 
 ## 昇腾环境安装
 

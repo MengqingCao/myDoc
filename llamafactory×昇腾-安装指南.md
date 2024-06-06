@@ -5,7 +5,7 @@
 <!-- ![](./images/llama-factory-logo.png)
 [![ascend-support](https://www.hiascend.com/_static3/logo1.BQ2XZIjU.svg)](https://www.hiascend.com/) -->
 
-[toc]
+[TOC]
 
 ## 昇腾环境安装
 

@@ -20,7 +20,7 @@
 
 - [[64GB]LLaMA-Factory-Cann8-Python3.10-Pytorch2.2.0](http://mirrors.cn-central-221.ovaijisuan.com/detail/131.html)
 
-## LLaMA-Factory 安装
+## LLaMA-Factory 下载安装
 
 > [!Note]
 >
@@ -33,6 +33,14 @@
 conda create -n <your_env_name> python=3.10
 # 激活虚拟环境
 conda activate <your_env_name>
+```
+
+### LLaMA-Factory 下载
+
+从  [LLaMA-Factory github 官方仓库](https://github.com/hiyouga/LLaMA-Factory)手动下载，或使用 git 拉取最新的 LLaMA-Factory 库：
+
+```bash
+git clone git@github.com:hiyouga/LLaMA-Factory.git
 ```
 
 ### 最简安装

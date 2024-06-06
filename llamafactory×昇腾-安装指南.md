@@ -2,7 +2,8 @@
 
 本教程面向使用 LLAMA-Factory & 昇腾的开发者，帮助完成昇腾环境下 LLaMA-Factory 的安装。
 
-![](E:\wawei\洞察\myDoc\images\llama-factory-logo.png)
+![](./images/llama-factory-logo.png)
+[![ascend-support](https://www.hiascend.com/_static3/logo1.BQ2XZIjU.svg)](https://www.hiascend.com/)
 
 ## 昇腾环境安装
 
@@ -10,7 +11,7 @@
 
 - [[32GB]LLaMA-Factory-Cann8-Python3.10-Pytorch2.2.0](http://mirrors.cn-central-221.ovaijisuan.com/detail/130.html)
 
-- [[64GB]LLaMA-Factory-Cann8-Python3.10-Pytorch2.2.0](http://mirrors.cn-central-221.ovaijisuan.com/detail/131.html)）
+- [[64GB]LLaMA-Factory-Cann8-Python3.10-Pytorch2.2.0](http://mirrors.cn-central-221.ovaijisuan.com/detail/131.html)
 
 ## LLaMA-Factory 安装
 

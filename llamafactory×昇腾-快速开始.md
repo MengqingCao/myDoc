@@ -71,6 +71,7 @@ LLaMA-Factory 进行模型/数据集下载、加速卡指定、gradio 端口指�
 > [!Note]
 >
 > 昇腾 NPU 卡从 0 开始编号，docker 容器内也是如此；
+> 
 > 如映射物理机上的 6，7 号 NPU 卡到容器内使用，其对应的卡号分别为 0，1
 
 如果想要自动使用所有的昇腾 NPU 卡，可使用以下脚本自动识别和设置 `ASCEND_RT_VISIBLE_DEVICES=0`：

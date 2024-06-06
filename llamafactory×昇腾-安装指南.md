@@ -2,8 +2,10 @@
 
 本教程面向使用 LLAMA-Factory & 昇腾的开发者，帮助完成昇腾环境下 LLaMA-Factory 的安装。
 
-![](./images/llama-factory-logo.png)
-[![ascend-support](https://www.hiascend.com/_static3/logo1.BQ2XZIjU.svg)](https://www.hiascend.com/)
+<!-- ![](./images/llama-factory-logo.png)
+[![ascend-support](https://www.hiascend.com/_static3/logo1.BQ2XZIjU.svg)](https://www.hiascend.com/) -->
+
+[toc]
 
 ## 昇腾环境安装
 
@@ -28,15 +30,17 @@ conda create -n <your_env_name> python=3.10
 conda activate <your_env_name>
 ```
 
+### 最简安装
+
 完成 conda 虚拟环境的激活后，使用以下命令安装带有 torch-npu 的 LLaMA-Factory：
 
 ```bash
 pip install -e .[torch_npu,metrics]
 ```
 
-注：
+### 推荐安装
 
-如需使用 deepspeed 、modelscope 等功能，请在 `[]` 中继续添加依赖项，如::
+推荐使用 deepspeed 、modelscope 功能，可在 `[]` 中继续添加依赖项安装，如:
 
 ```bash
 pip install -e .[torch_npu,metrics,deepspeed,modelscope]
@@ -46,4 +50,20 @@ pip install -e .[torch_npu,metrics,deepspeed,modelscope]
 
 > 可选的额外依赖项：torch、torch_npu、metrics、deepspeed、bitsandbytes、vllm、galore、badam、gptq、awq、aqlm、qwen、modelscope、quality
 
-安装完成后出现 `Successfully installed xxx xxx ...` 关键回显信息即说明安装成功，请愉快使用 LLaMA-Factory × 昇腾实现大语言模型微调、推理吧！
+可根据需要进行选择安装。
+
+安装完成后出现 `Successfully installed xxx xxx ...` 关键回显信息即说明各依赖包安装成功，如遇依赖包版本冲突，可使用 `pip install --no-deps -e .` 安装。
+
+### 安装校验
+
+在[LLaMA-Factory 安装](#LLaMA-Factory 安装)中搭建好的 conda 虚拟环境下，使用 `llamafactory-cli version` 指令对 LLaMA-Factory × 昇腾的安装进行校验，如下图所示，正确显示 LLaMA-Factory 版本号说明 LLaMA-Factory 安装成功；显示 `Setting ds_accelerator to npu` 说明 deepspeed 及 npu 环境安装成功。
+
+![install_check](./images/install_check.png)
+
+> [!Note]
+>
+> 如采用最简安装，未安装 deepspeed，则回显如下图：
+>
+> ![install_check_simple](./images/install_check_simple.png)
+
+请愉快使用 LLaMA-Factory × 昇腾实现大语言模型微调、推理吧！

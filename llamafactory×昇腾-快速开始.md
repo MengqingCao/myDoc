@@ -5,11 +5,11 @@
 > 食用本篇前，请确保已按照[安装指南](./llamafactory×昇腾-安装指南.md)准备好昇腾环境及 LLaMA-Factory ！
 > 本篇将使用到 DeepSpeed 和 ModelScope，请参考安装指南中的推荐安装进行安装。
 
-由于 LLaMA-Factory 最核心的功能即为大语言模型（Large Language Model，LLM）的微调，快速开始中将聚焦 LLM 的微调过程，以 qwen1.5-7B 模型为例，讲述如何使用 LLaMA-Factory 在昇腾 NPU 上进行微调。
+由于 LLaMA-Factory 最核心的功能即为大语言模型（Large Language Model，LLM）的微调，本教程将聚焦 LLM 的微调过程，以 qwen1.5-7B 模型为例，讲述如何使用 LLaMA-Factory 在昇腾 NPU 上进行 lora 微调。
 
 - [LLaMA-Factory × 昇腾 快速开始](#llama-factory--昇腾-快速开始)
-  - [急速省流版](#急速省流版)
-  - [详细解说版](#详细解说版)
+  - [快速微调 \& 推理](#快速微调--推理)
+  - [微调 \& 推理详解](#微调--推理详解)
     - [环境变量配置](#环境变量配置)
       - [昇腾 NPU 相关环境变量](#昇腾-npu-相关环境变量)
       - [其他环境变量](#其他环境变量)
@@ -18,9 +18,11 @@
     - [webui启动](#webui启动)
   - [推荐教程](#推荐教程)
 
-## 急速省流版
+## 快速微调 & 推理
 
 执行以下脚本，自动检测昇腾 NPU 相关信息并在 NPU 上完成简单微调及推理：
+
+<details><summary>展开完整脚本</summary>
 
 ```bash
 # ------------------------------ detect npu --------------------------------------
@@ -55,7 +57,9 @@ torchrun --nproc_per_node $num_gpus \
 llamafactory-cli chat examples/lora_single_npu/llama3_lora_sft_ds.yaml
 ```
 
-## 详细解说版
+</details>
+
+## 微调 & 推理详解
 
 ### 环境变量配置
 
@@ -109,30 +113,97 @@ export ASCEND_RT_VISIBLE_DEVICES=$npu_list
 
 LLaMA-Factory 对 LLM 进行微调提供了两种启动方式：入口脚本 src/train.py 和命令行工具 `llamafactory-cli train`。
 
+<!-- TODO: 确认是否只有这两个是必须指定的参数 -->
+需要注意的是，必须指定模型托管平台上模型仓名字或模型本地地址 `model_name_or_path` 和输出文件保存路径 `output_dir` 参数，本教程以 Qwen1.5-7B 模型为例，可按需将 `model_name_or_path` 替换为所需模型。
+
+`template` 参数请参考 [LLaMA-Factory 官方指引](https://github.com/hiyouga/LLaMA-Factory/blob/main/README_zh.md#%E6%A8%A1%E5%9E%8B)根据使用的模型对应修改，这里引用官方仓库中有关 `template` 参数的说明：
+
+>> [!NOTE]
+>>
+>> 对于所有“基座”（Base）模型，`template` 参数可以是 `default`, `alpaca`, `vicuna` 等任意值。但“对话”（Instruct/Chat）模型请务必使用**对应的模板**。
+>> 请务必在训练和推理时采用**完全一致**的模板。
+>>
+
 1. 使用入口脚本 src/train.py （当前路径为 LLaMA-Factory 根目录）
    
    使用分布式 launcher torchrun 启动微调，需要指定 `nproc_per_node, nnodes, node_rank, master_addr, master_port` 参数，参数的详细含义可参考 [PyTorch 官方文档](https://pytorch.org/docs/stable/elastic/run.html)。
 
    ```bash
-    ### qwen/Qwen1.5-7B
-    ### finetune
     torchrun --nproc_per_node $num_gpus \
         --nnodes 1 \
         --node_rank 0 \
         --master_addr 127.0.0.1 \
         --master_port 7007 \
-        src/train.py examples/lora_single_npu/qwen1_5_lora_sft_ds.yaml
-    ```
+        src/train.py <your_path>/qwen1_5_lora_sft_ds.yaml
+            --model_name_or_path qwen/Qwen1.5-7B \
+            --output_dir saves/Qwen1.5-7B/lora/sft \
+            --lora_target q_proj,v_proj \
+            --template qwen
+   ```
 
 2. 或 `llamafactory-cli train` 进行微调
    
    ```bash
-    ### qwen/Qwen1.5-7B
-    ### finetune
-    llamafactory-cli train examples/lora_single_npu/qwen1_5_lora_sft_ds.yaml
+    llamafactory-cli train <your_path>/qwen1_5_lora_sft_ds.yaml
+            --model_name_or_path qwen/Qwen1.5-7B \
+            --output_dir saves/Qwen1.5-7B/lora/sft \
+            --lora_target q_proj,v_proj \
+            --template qwen
    ```
 
 完整脚本请参考[急速省流版](#急速省流版)
+
+完整 qwen1_5_lora_sft_ds.yaml：
+
+<details><summary>展开 yaml 配置文件</summary>
+
+```yaml
+### model
+model_name_or_path: qwen/Qwen1.5-7B
+
+### method
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_target: q_proj,v_proj
+
+### ddp
+ddp_timeout: 180000000
+deepspeed: examples/deepspeed/ds_z0_config.json
+
+### dataset
+dataset: identity,alpaca_en_demo
+template: qwen
+cutoff_len: 1024
+max_samples: 1000
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+### output
+output_dir: saves/Qwen1.5-7B/lora/sft
+logging_steps: 10
+save_steps: 500
+plot_loss: true
+overwrite_output_dir: true
+
+### train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 2
+learning_rate: 0.0001
+num_train_epochs: 3.0
+lr_scheduler_type: cosine
+warmup_steps: 0.1
+fp16: true
+
+### eval
+val_size: 0.1
+per_device_eval_batch_size: 1
+evaluation_strategy: steps
+eval_steps: 500
+
+```
+
+</details>
 
 ### webui启动
 
